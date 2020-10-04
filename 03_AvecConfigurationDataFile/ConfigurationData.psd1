@@ -16,10 +16,6 @@
                 NodeName = @("SERVER1","SERVER2")
                 Role = "RdsServer"
             }
-            @{
-                NodeName = "SRVSql"
-                Role = "SqlServer"
-            }
         )
     Roles = @(
             @{
@@ -35,9 +31,6 @@
                 RoleName = "RdsServer"
                 WindowsFeature = "RDS-RD-Server"
                 ChocoPackages  = "javaruntime" , "7zip.install"
-            }
-            @{
-                RoleName = "SqlServer"
             }
         )
     ChocoParams = @{

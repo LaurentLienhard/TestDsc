@@ -27,7 +27,7 @@ Set-LabInstallationCredential -Username "Install" -Password "Somepass1"
 $PSDefaultParameterValues = @{
     'Add-LabMachineDefinition:Network'    = $labName
     'Add-LabMachineDefinition:DomainName' = $Domain
-    'Add-LabMachineDefinition:Memory'     = 6GB
+    'Add-LabMachineDefinition:Memory'     = 2GB
 }
 
 $Roles = @()
@@ -42,12 +42,12 @@ $netAdapter += New-LabNetworkAdapterDefinition -VirtualSwitch $labName -Ipv4Addr
 $netAdapter += New-LabNetworkAdapterDefinition -VirtualSwitch 'Default Switch' -UseDhcp
 
 $postInstallActivity = Get-LabPostInstallationActivity -ScriptFileName PrepareRootDomain.ps1 -DependencyFolder $labSources\PostInstallationActivities\PrepareRootDomain
-Add-LabMachineDefinition -Name SRV01 -Roles $Roles -PostInstallationActivity $postInstallActivity -NetworkAdapter $netAdapter -OperatingSystem 'Windows Server 2019 Standard (Desktop Experience)'
+Add-LabMachineDefinition -Name SRV01 -Roles $Roles -PostInstallationActivity $postInstallActivity -NetworkAdapter $netAdapter -OperatingSystem 'Windows Server 2019 Datacenter'
 
 #DSC Pull Clients
-Add-LabMachineDefinition -Name Server1 -Memory 1Gb -IpAddress 192.168.81.2 -DnsServer1 192.168.81.1 -OperatingSystem 'Windows Server 2019 Standard (Desktop Experience)'
-Add-LabMachineDefinition -Name Server2 -Memory 1Gb -IpAddress 192.168.81.3 -DnsServer1 192.168.81.1 -OperatingSystem 'Windows Server 2019 Standard (Desktop Experience)'
-Add-LabMachineDefinition -Name SRVSql -Memory 1Gb -IpAddress 192.168.81.4 -DnsServer1 192.168.81.1 -OperatingSystem 'Windows Server 2019 Datacenter'
+Add-LabMachineDefinition -Name Server1 -Memory 4Gb -IpAddress 192.168.81.2 -DnsServer1 192.168.81.1 -OperatingSystem 'Windows Server 2019 Standard (Desktop Experience)'
+Add-LabMachineDefinition -Name Server2 -Memory 4Gb -IpAddress 192.168.81.3 -DnsServer1 192.168.81.1 -OperatingSystem 'Windows Server 2019 Standard (Desktop Experience)'
+#Add-LabMachineDefinition -Name SRVSql -Memory 1Gb -IpAddress 192.168.81.4 -DnsServer1 192.168.81.1 -OperatingSystem 'Windows Server 2019 Datacenter'
 
 Install-Lab
 Install-LabDscClient -All

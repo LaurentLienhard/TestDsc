@@ -102,6 +102,6 @@
 }
 
 
-SRVPullConfig -OutputPath ../MOFFiles
+SRVPullConfig -OutputPath ./MOFFiles
 
 #Start-DscConfiguration -Path ./SRVPullConfig -ComputerName SRV01 -Wait -Force -Verbose

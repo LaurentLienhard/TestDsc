@@ -3,24 +3,25 @@
 [DSCLocalConfigurationManager()]
 configuration PullClientConfigNames {
         Node $AllNodes.NodeName {
+            $LCMConfig = $configurationData.LCMParams
             Settings {
-                ConfigurationMode = 'ApplyAndAutoCorrect'
-                ActionAfterReboot = 'ContinueConfiguration'
-                RefreshMode = 'Pull'
-                RefreshFrequencyMins = 30
-                ConfigurationModeFrequencyMins = 15
-                RebootNodeIfNeeded = $true
-                AllowModuleOverwrite = $true
+                ConfigurationMode = $LCMConfig.LCMConfigurationMode
+                ActionAfterReboot = $LCMConfig.LCMActionAfterReboot
+                RefreshMode = $LCMConfig.LCMRefreshMode
+                RefreshFrequencyMins = $LCMConfig.LCMRefreshFrequencyMins
+                ConfigurationModeFrequencyMins = $LCMConfig.LCMConfigurationModeFrequencyMins
+                RebootNodeIfNeeded = $LCMConfig.LCMRebootNodeIfNeeded
+                AllowModuleOverwrite = $LCMConfig.LCMAllowModuleOverwrite
             }
 
             ConfigurationRepositoryWeb SRV01 {
-                ServerURL = "https://SRV01:8080/PSDSCPullServer.svc"
+                ServerURL = $LCMConfig.LCMServerUrl
                 RegistrationKey = $RegKeyFromLocation
                 ConfigurationNames = @($NodeName)
             }
 
             ResourceRepositoryWeb SRV01 {
-                ServerURL = "https://SRV01:8080/PSDSCPullServer.svc"
+                ServerURL = $LCMConfig.LCMServerUrl
             }
         }
     }

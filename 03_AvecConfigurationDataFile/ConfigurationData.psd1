@@ -13,11 +13,11 @@
             Role     = @("PullServer", "DomainController", "RootCA", "Routeur")
         },
         @{
-            NodeName = "SERVER01"
+            NodeName = "SERVER1"
             Role     = @("RdsServer")
         }
         @{
-            NodeName = "SERVER02"
+            NodeName = "SERVER2"
             Role     = @("RdsServer")
         }
     )
@@ -46,5 +46,10 @@
         LCMConfigurationMode = 'ApplyAndAutoCorrect'
         LCMActionAfterReboot   = 'ContinueConfiguration'
         LCMRefreshMode     = 'Pull'
+        LCMRefreshFrequencyMins = 30
+        LCMConfigurationModeFrequencyMins = 15
+        LCMRebootNodeIfNeeded = $true
+        LCMAllowModuleOverwrite = $true
+        LCMServerUrl = "https://SRV01:8080/PSDSCPullServer.svc"
     }
 }

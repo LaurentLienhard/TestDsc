@@ -1,9 +1,10 @@
 ﻿Configuration ConfigurationServer {
     Import-DscResource –ModuleName PSDesiredStateConfiguration, chocolatey, ComputerManagementDsc
-    #Import-DscResource -ModuleName PowerShellGet -ModuleVersion "2.2.3"
+    Import-DscResource -ModuleName PowerShellGet -ModuleVersion "2.2.5"
 
     #Configure All Node
     Node $AllNodes.NodeName {
+
         #Install feature for All Node
         foreach ($Feature in $Node.WindowsFeature) {
             WindowsFeature $Feature {
@@ -11,6 +12,7 @@
                 Ensure = $Node.Ensure
             }
         }
+
         #Install services for All Node
         foreach ($Service in $Node.Services) {
             Service $Service {
@@ -20,6 +22,7 @@
                 State       = $Node.ServiceState
             }
         }
+
         #Configure All Pull Server
         if ($Node.Role -contains "PullServer") {
             #Install feature for Pull Server
@@ -29,13 +32,15 @@
                     Ensure = $Node.Ensure
                 }
             }
+
             #Install module for Pull Server
-<#             foreach ($Module in $ConfigurationData.Roles.Where{ $_.RoleName -Contains "PullServer" }.Modules) {
+            foreach ($Module in $ConfigurationData.Roles.Where{ $_.RoleName -Contains "PullServer" }.Modules) {
                 PSModule "$Module" {
                     Name   = "$Module"
                     Ensure = $Node.Ensure
                 }
-            } #>
+            }
+
             #Install Service for Pull Server
             foreach ($Service in $ConfigurationData.Roles.Where{ $_.RoleName -Contains "PullServer" }.Services) {
                 Service $Service {
@@ -45,35 +50,41 @@
                     State       = $Node.ServiceState
                 }
             }
+
             #region <Config Directory>
             File "RepTest" {
                 DestinationPath = "C:\Test"
                 Ensure          = "Present"
                 Type            = "Directory"
             }
+
             File "RepConfiguration" {
                 DestinationPath = "C:\Test\Configuration"
                 Ensure          = "Present"
                 Type            = "Directory"
                 DependsOn       = "[File]RepTest"
             }
+
             File "RepMOFFiles" {
                 DestinationPath = "C:\Test\MOFFiles"
                 Ensure          = "Present"
                 Type            = "Directory"
                 DependsOn       = "[File]RepTest"
             }
+
             File "RepLCMFiles" {
                 DestinationPath = "C:\Test\LCMFiles"
                 Ensure          = "Present"
                 Type            = "Directory"
                 DependsOn       = "[File]RepTest"
             }
+
             File "RepSources" {
                 DestinationPath = "C:\Sources"
                 Type            = "Directory"
                 Ensure          = "Present"
             }
+
             SmbShare 'RepSources' {
                 Ensure      = "Present"
                 Path        = "C:\Sources"
@@ -93,9 +104,10 @@
                     Ensure = $Node.Ensure
                 }
             }
+
             #Install services for Domain Controller
             foreach ($Service in $ConfigurationData.Roles.where{ $_.RoleName -Contains 'DomainController' }.Services) {
-                Service $Service {
+                Service "DC_$Service" {
                     Name        = "$Service"
                     Ensure      = $Node.Ensure
                     StartupType = $Node.ServiceStartupType
@@ -112,6 +124,7 @@
                     Ensure = $Node.Ensure
                 }
             }
+
             #region <ChocoPackage>
             #Install Chocolatey on Server RDS
             ChocolateySoftware ChocoInst {
@@ -119,6 +132,7 @@
                 InstallationDirectory = $ConfigurationData.ChocoParams.ChocoInstallDir
                 ChocoTempDir          = $ConfigurationData.ChocoParams.ChocoSource
             }
+
             #Configure Chocolatey on Server RDS
             ChocolateySource ChocolateyOrg {
                 DependsOn = '[ChocolateySoftware]ChocoInst'
@@ -128,10 +142,20 @@
                 Priority  = 0
                 Disabled  = $false
             }
+
+            #Install chocolatey package for Server RDS
+            foreach ($Package in $ConfigurationData.Roles.where{ $_.RoleName -eq 'RdsServer' }.ChocoPackages) {
+                ChocolateyPackage $Package {
+                    Name      = "$Package"
+                    Ensure    = $Node.Ensure
+                    DependsOn = '[ChocolateySoftware]ChocoInst'
+                }
+            }
             #endregion <ChocoPackage>
         }
     }
 }
+
 ConfigurationServer -ConfigurationData ".\ConfigurationData.psd1" -OutputPath ".\MOFFiles"
 <# Get-ChildItem -Path C:\Test\MOF | foreach {
 $MofName = $_.Name

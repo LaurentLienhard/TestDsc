@@ -158,7 +158,7 @@
     }
 }
 
-ConfigurationServer -ConfigurationData ".\ConfigurationData.psd1" -OutputPath "..\MOFFiles"
+ConfigurationServer -ConfigurationData ".\ConfigurationData.psd1" -OutputPath ".\MOFFiles"
 
 <# Get-ChildItem -Path C:\Test\MOF | Foreach {
 $MofName = $_.Name

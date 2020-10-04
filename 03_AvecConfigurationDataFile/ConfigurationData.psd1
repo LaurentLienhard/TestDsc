@@ -34,7 +34,23 @@
         @{
             RoleName       = "RdsServer"
             WindowsFeature = @("RDS-RD-Server")
-            ChocoPackages  = @("javaruntime" , "7zip.install")
+            ChocoPackages  = @(
+                @{
+                    Name = "javaruntime"
+                    Version = "8.0.60"
+                    Params = ""
+                }
+                @{
+                    Name = "7zip.install"
+                    Version = "19.0"
+                    Params   = ""
+                 }
+                @{
+                    Name = "git"
+                    Version = "2.28.0"
+                    ChocoOptions   = @{ PackageParameters = '/GitAndUnixToolsOnPath /NoGitLfs /SChannel /NoAutoCrlf' }
+                 }
+            )
         }
     )
     ChocoParams = @{

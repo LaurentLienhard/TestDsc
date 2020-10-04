@@ -130,7 +130,7 @@
             ChocolateySoftware ChocoInst {
                 Ensure                = $Node.Ensure
                 InstallationDirectory = $ConfigurationData.ChocoParams.ChocoInstallDir
-                ChocoTempDir          = $ConfigurationData.ChocoParams.ChocoSource
+                ChocoTempDir          = $ConfigurationData.ChocoParams.ChocoTempDir
             }
 
             #Configure Chocolatey on Server RDS
@@ -138,16 +138,18 @@
                 DependsOn = '[ChocolateySoftware]ChocoInst'
                 Ensure    = $Node.Ensure
                 Name      = 'Chocolatey'
-                Source    = $ConfigurationData.ChocoParams.ChocoTempDir
+                Source    = $ConfigurationData.ChocoParams.ChocoSource
                 Priority  = 0
                 Disabled  = $false
             }
 
             #Install chocolatey package for Server RDS
             foreach ($Package in $ConfigurationData.Roles.where{ $_.RoleName -eq 'RdsServer' }.ChocoPackages) {
-                ChocolateyPackage $Package {
-                    Name      = "$Package"
+                ChocolateyPackage $Package.Name {
+                    Name      = $Package.Name
                     Ensure    = $Node.Ensure
+                    Version = $Package.Version
+                    ChocolateyOptions = $Package.ChocoOptions
                     DependsOn = '[ChocolateySoftware]ChocoInst'
                 }
             }

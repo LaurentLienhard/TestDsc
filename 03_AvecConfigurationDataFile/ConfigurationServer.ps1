@@ -160,7 +160,7 @@
 
 ConfigurationServer -ConfigurationData ".\ConfigurationData.psd1" -OutputPath ".\MOFFiles"
 
-<# Get-ChildItem -Path C:\Test\MOF | Foreach {
+<# Get-ChildItem -Path ".\MOFFiles" | Foreach {
 $MofName = $_.Name
 $DestinationMof = "C:\Program Files\WindowsPowershell\DSCService\Configuration\$MofName"
 Copy-Item $_.FullName $DestinationMof

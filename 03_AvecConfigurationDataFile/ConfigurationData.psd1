@@ -38,4 +38,9 @@
         ChocoTempDir    = "$env:Temp\Chocolatey"
         ChocoSource     = 'https://chocolatey.org/api/v2'
     }
+    LCMParams = @{
+        LCMConfigurationMode = 'ApplyAndAutoCorrect'
+        LCMActionAfterReboot   = 'ContinueConfiguration'
+        LCMRefreshMode     = 'Pull'
+    }
 }

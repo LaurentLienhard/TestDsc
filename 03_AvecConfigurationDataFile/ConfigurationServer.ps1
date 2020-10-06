@@ -1,5 +1,12 @@
 ﻿Configuration ConfigurationServer {
-    Import-DscResource –ModuleName PSDesiredStateConfiguration, chocolatey, ComputerManagementDsc
+    param (
+
+        [Parameter(Mandatory = $true)]
+        [pscredential]$domainadmin
+
+    )
+
+    Import-DscResource –ModuleName PSDesiredStateConfiguration, chocolatey, ComputerManagementDsc, @{ModuleName = 'xRemoteDesktopSessionHost'; ModuleVersion = "1.8.0.0" }
     Import-DscResource -ModuleName PowerShellGet -ModuleVersion "2.2.5"
 
     #Configure All Node
@@ -113,6 +120,62 @@
                     StartupType = $Node.ServiceStartupType
                     State       = $Node.ServiceState
                 }
+            }
+        }
+
+        if ($Node.Role -contains 'Connection Broker') {
+            $RDData = $ConfigurationData.RDSData
+
+            foreach ($Feature in $ConfigurationData.Roles.Where{ $_.RoleName -Contains 'Connection Broker' }.WindowsFeature) {
+                WindowsFeature "CB_$Feature" {
+                    Name   = "$Feature"
+                    Ensure = $Node.Ensure
+                }
+            }
+
+<#             WaitForAll SessionHost {
+
+                NodeName         = 'server2.hiat.local'
+                ResourceName     = '[WindowsFeature]RDS_RDS-RD-Server'
+                RetryIntervalSec = 15
+                RetryCount       = 50
+                DependsOn        = '[WindowsFeature]CB_RDS-Licensing'
+            } #>
+
+            xRDSessionDeployment "NewDeploy" {
+                ConnectionBroker     = $RDData.ConnectionBroker
+                SessionHost          = $RDData.SessionHost
+                WebAccessServer      = $RDData.WebAccessServer
+                PsDscRunAsCredential = $domainadmin
+            }
+
+            xRDSessionCollection "MyCollection" {
+                CollectionName       = $RDData.CollectionName
+                SessionHost          = $RDData.SessionHost
+                ConnectionBroker     = $RDData.ConnectionBroker
+                DependsOn            = '[xRDSessionDeployment]NewDeploy'
+                PsDscRunAsCredential = $domainadmin
+            }
+
+            xRDSessionCollectionConfiguration "CollectionConfig" {
+                CollectionName               = $RDData.CollectionName
+                ConnectionBroker             = $RDData.ConnectionBroker
+                AutomaticReconnectionEnabled = $true
+                DisconnectedSessionLimitMin  = $RDData.DisconnectedSessionLimitMin
+                IdleSessionLimitMin          = $RDData.IdleSessionLimitMin
+                BrokenConnectionAction       = $RDData.BrokenConnectionAction
+                UserGroup                    = $RDData.UserGroup
+                DependsOn                    = '[xRDSessionCollection]MyCollection'
+                PsDscRunAsCredential         = $domainadmin
+            }
+
+            xRDLicenseConfiguration "licenseconfig" {
+
+                ConnectionBroker = $RDData.ConnectionBroker
+                LicenseServer = $RDData.LicenseServer
+                LicenseMode          = 'PerUser'
+                DependsOn            = '[xRDSessionCollectionConfiguration]CollectionConfig'
+                PsDscRunAsCredential = $domainadmin
             }
         }
 

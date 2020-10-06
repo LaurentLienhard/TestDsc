@@ -7,6 +7,8 @@
             Ensure             = "Present"
             ServiceState       = "Running"
             ServiceStartupType = "Automatic"
+            PSDscAllowPlainTextPassword = $true
+            PSDscAllowDomainUser        = $true
         },
         @{
             NodeName = "SRV01"
@@ -14,7 +16,7 @@
         },
         @{
             NodeName = "SERVER1"
-            Role     = @("RdsServer")
+            Role     = @("Connection Broker")
         }
         @{
             NodeName = "SERVER2"
@@ -32,6 +34,10 @@
             Services       = @("DNS", "NTDS")
         },
         @{
+            RoleName = "Connection Broker"
+            WindowsFeature = @("RDS-Connection-Broker", "RDS-Licensing")
+        }
+        @{
             RoleName       = "RdsServer"
             WindowsFeature = @("RDS-RD-Server")
             ChocoPackages  = @(
@@ -48,7 +54,7 @@
                 @{
                     Name = "git"
                     Version = "2.28.0"
-                    ChocoOptions   = @{ PackageParameters = '/GitAndUnixToolsOnPath /NoGitLfs /SChannel /NoAutoCrlf' }
+                    #ChocoOptions   = @{ PackageParameters = '/GitAndUnixToolsOnPath /NoGitLfs /SChannel /NoAutoCrlf' }
                  }
             )
         }
@@ -67,5 +73,17 @@
         LCMRebootNodeIfNeeded = $true
         LCMAllowModuleOverwrite = $true
         LCMServerUrl = "https://SRV01:8080/PSDSCPullServer.svc"
+    }
+    RDSParams = @{
+        ConnectionBroker = "Server1.hiat.local"
+        SessionHost = "server2.hiat.local"
+        CollectionName = "MyCollection"
+        AutomaticReconnectionEnabled = $true
+        DisconnectedSessionLimitMin  = 360
+        IdleSessionLimitMin          = 360
+        BrokenConnectionAction       = 'Disconnect'
+        UserGroup                    = 'RDS Users'
+        LicenseServer                = 'Server1.hiat.local'
+        LicenseMode                  = 'PerUser'
     }
 }

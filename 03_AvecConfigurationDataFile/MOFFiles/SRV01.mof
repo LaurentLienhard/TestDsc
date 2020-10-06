@@ -1,0 +1,242 @@
+/*
+@TargetNode='SRV01'
+@GeneratedBy=Laurent.Lienhard
+@GenerationDate=10/06/2020 08:34:39
+@GenerationHost=PORT9999
+*/
+
+instance of MSFT_RoleResource as $MSFT_RoleResource1ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ Name = "SNMP-Service";
+ ResourceID = "[WindowsFeature]SNMP-Service";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::17::13::WindowsFeature";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_RoleResource as $MSFT_RoleResource2ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ Name = "SNMP-WMI-Provider";
+ ResourceID = "[WindowsFeature]SNMP-WMI-Provider";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::17::13::WindowsFeature";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_ServiceResource as $MSFT_ServiceResource1ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ Name = "SNMP";
+ State = "Running";
+ ResourceID = "[Service]SNMP";
+ Ensure = "Present";
+ StartupType = "Automatic";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::25::13::Service";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_PSModule as $MSFT_PSModule1ref
+{
+ModuleName = "PowerShellGet";
+ Name = "PSDesiredStateConfiguration";
+ ModuleVersion = "2.2.5";
+ ResourceID = "[PSModule]PSDesiredStateConfiguration";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::45::17::PSModule";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_PSModule as $MSFT_PSModule2ref
+{
+ModuleName = "PowerShellGet";
+ Name = "chocolatey";
+ ModuleVersion = "2.2.5";
+ ResourceID = "[PSModule]chocolatey";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::45::17::PSModule";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_PSModule as $MSFT_PSModule3ref
+{
+ModuleName = "PowerShellGet";
+ Name = "ComputerManagementDsc";
+ ModuleVersion = "2.2.5";
+ ResourceID = "[PSModule]ComputerManagementDsc";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::45::17::PSModule";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_PSModule as $MSFT_PSModule4ref
+{
+ModuleName = "PowerShellGet";
+ Name = "SqlServerDsc";
+ ModuleVersion = "2.2.5";
+ ResourceID = "[PSModule]SqlServerDsc";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::45::17::PSModule";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_PSModule as $MSFT_PSModule5ref
+{
+ModuleName = "PowerShellGet";
+ Name = "ActiveDirectoryDsc";
+ ModuleVersion = "2.2.5";
+ ResourceID = "[PSModule]ActiveDirectoryDsc";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::45::17::PSModule";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration1ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ DestinationPath = "C:\\Test";
+ ResourceID = "[File]RepTest";
+ Ensure = "Present";
+ Type = "Directory";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::62::13::File";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration2ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ DestinationPath = "C:\\Test\\Configuration";
+ ResourceID = "[File]RepConfiguration";
+ Ensure = "Present";
+ Type = "Directory";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::68::13::File";
+
+ModuleVersion = "1.0";
+DependsOn = {
+    "[File]RepTest"};
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration3ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ DestinationPath = "C:\\Test\\MOFFiles";
+ ResourceID = "[File]RepMOFFiles";
+ Ensure = "Present";
+ Type = "Directory";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::75::13::File";
+
+ModuleVersion = "1.0";
+DependsOn = {
+    "[File]RepTest"};
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration4ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ DestinationPath = "C:\\Test\\LCMFiles";
+ ResourceID = "[File]RepLCMFiles";
+ Ensure = "Present";
+ Type = "Directory";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::82::13::File";
+
+ModuleVersion = "1.0";
+DependsOn = {
+    "[File]RepTest"};
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration5ref
+{
+ModuleName = "PSDesiredStateConfiguration";
+ DestinationPath = "C:\\Sources";
+ ResourceID = "[File]RepSources";
+ Ensure = "Present";
+ Type = "Directory";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::89::13::File";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of DSC_SmbShare as $DSC_SmbShare1ref
+{
+Description = "Sources d'installation";
+ ModuleName = "ComputerManagementDsc";
+ Name = "Sources";
+ ModuleVersion = "8.4.0";
+ FullAccess = {
+    "Everyone"
+};
+ ResourceID = "[SmbShare]RepSources";
+ Path = "C:\\Sources";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::95::13::SmbShare";
+
+DependsOn = {
+    "[File]RepSources"};
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_RoleResource as $MSFT_RoleResource3ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ Name = "AD-Domain-Services";
+ ResourceID = "[WindowsFeature]DC_AD-Domain-Services";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::109::17::WindowsFeature";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_RoleResource as $MSFT_RoleResource4ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ Name = "RSAT-AD-PowerShell";
+ ResourceID = "[WindowsFeature]DC_RSAT-AD-PowerShell";
+ Ensure = "Present";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::109::17::WindowsFeature";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_ServiceResource as $MSFT_ServiceResource2ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ Name = "DNS";
+ State = "Running";
+ ResourceID = "[Service]DC_DNS";
+ Ensure = "Present";
+ StartupType = "Automatic";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::117::17::Service";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_ServiceResource as $MSFT_ServiceResource3ref
+{
+ModuleName = "PsDesiredStateConfiguration";
+ Name = "NTDS";
+ State = "Running";
+ ResourceID = "[Service]DC_NTDS";
+ Ensure = "Present";
+ StartupType = "Automatic";
+ SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::117::17::Service";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of OMI_ConfigurationDocument
+
+                    {
+ Version="2.0.0";
+
+                        MinimumCompatibleVersion = "1.0.0";
+
+                        CompatibleVersionAdditionalProperties= {"Omi_BaseResource:ConfigurationName"};
+
+                        Author="Laurent.Lienhard";
+
+                        GenerationDate="10/06/2020 08:34:39";
+
+                        GenerationHost="PORT9999";
+
+                        Name="ConfigurationServer";
+
+                    };

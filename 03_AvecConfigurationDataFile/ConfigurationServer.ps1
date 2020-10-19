@@ -1,12 +1,5 @@
 ﻿Configuration ConfigurationServer {
-    param (
-
-        [Parameter(Mandatory = $true)]
-        [pscredential]$domainadmin
-
-    )
-
-    Import-DscResource –ModuleName PSDesiredStateConfiguration, chocolatey, ComputerManagementDsc, @{ModuleName = 'xRemoteDesktopSessionHost'; ModuleVersion = "1.8.0.0" }
+    Import-DscResource –ModuleName PSDesiredStateConfiguration, cChoco, chocolatey, ComputerManagementDsc
     Import-DscResource -ModuleName PowerShellGet -ModuleVersion "2.2.5"
 
     #Configure All Node
@@ -48,7 +41,7 @@
                 }
             }
 
-            #Install Service for Pull Server
+<#             #Install Service for Pull Server
             foreach ($Service in $ConfigurationData.Roles.Where{ $_.RoleName -Contains "PullServer" }.Services) {
                 Service $Service {
                     Name        = "$Service"
@@ -56,7 +49,7 @@
                     StartupType = $Node.ServiceStartupType
                     State       = $Node.ServiceState
                 }
-            }
+            } #>
 
             #region <Config Directory>
             File "RepTest" {
@@ -106,114 +99,96 @@
         #Configure All Domain Controller
         if ($Node.Role -contains 'DomainController') {
             foreach ($Feature in $ConfigurationData.Roles.Where{ $_.RoleName -Contains 'DomainController' }.WindowsFeature) {
-                WindowsFeature "DC_$Feature" {
-                    Name   = "$Feature"
-                    Ensure = $Node.Ensure
+                WindowsFeature $Feature.Name {
+                    Name   = $Feature.name
+                    Ensure = $Feature.Ensure
                 }
             }
 
             #Install services for Domain Controller
             foreach ($Service in $ConfigurationData.Roles.where{ $_.RoleName -Contains 'DomainController' }.Services) {
-                Service "DC_$Service" {
-                    Name        = "$Service"
-                    Ensure      = $Node.Ensure
-                    StartupType = $Node.ServiceStartupType
-                    State       = $Node.ServiceState
+                Service $Service.Name {
+                    Name        = $Service.Name
+                    Ensure      = $Service.Ensure
+                    StartupType = $Service.ServiceStartupType
+                    State       = $Service.ServiceState
                 }
             }
         }
 
         if ($Node.Role -contains 'Connection Broker') {
-            $RDData = $ConfigurationData.RDSData
-
             foreach ($Feature in $ConfigurationData.Roles.Where{ $_.RoleName -Contains 'Connection Broker' }.WindowsFeature) {
-                WindowsFeature "CB_$Feature" {
-                    Name   = "$Feature"
-                    Ensure = $Node.Ensure
+                WindowsFeature $Feature.name {
+                    Name   = $Feature.Name
+                    Ensure = $Feature.Ensure
                 }
-            }
-
-<#             WaitForAll SessionHost {
-
-                NodeName         = 'server2.hiat.local'
-                ResourceName     = '[WindowsFeature]RDS_RDS-RD-Server'
-                RetryIntervalSec = 15
-                RetryCount       = 50
-                DependsOn        = '[WindowsFeature]CB_RDS-Licensing'
-            } #>
-
-            xRDSessionDeployment "NewDeploy" {
-                ConnectionBroker     = $RDData.ConnectionBroker
-                SessionHost          = $RDData.SessionHost
-                WebAccessServer      = $RDData.WebAccessServer
-                PsDscRunAsCredential = $domainadmin
-            }
-
-            xRDSessionCollection "MyCollection" {
-                CollectionName       = $RDData.CollectionName
-                SessionHost          = $RDData.SessionHost
-                ConnectionBroker     = $RDData.ConnectionBroker
-                DependsOn            = '[xRDSessionDeployment]NewDeploy'
-                PsDscRunAsCredential = $domainadmin
-            }
-
-            xRDSessionCollectionConfiguration "CollectionConfig" {
-                CollectionName               = $RDData.CollectionName
-                ConnectionBroker             = $RDData.ConnectionBroker
-                AutomaticReconnectionEnabled = $true
-                DisconnectedSessionLimitMin  = $RDData.DisconnectedSessionLimitMin
-                IdleSessionLimitMin          = $RDData.IdleSessionLimitMin
-                BrokenConnectionAction       = $RDData.BrokenConnectionAction
-                UserGroup                    = $RDData.UserGroup
-                DependsOn                    = '[xRDSessionCollection]MyCollection'
-                PsDscRunAsCredential         = $domainadmin
-            }
-
-            xRDLicenseConfiguration "licenseconfig" {
-
-                ConnectionBroker = $RDData.ConnectionBroker
-                LicenseServer = $RDData.LicenseServer
-                LicenseMode          = 'PerUser'
-                DependsOn            = '[xRDSessionCollectionConfiguration]CollectionConfig'
-                PsDscRunAsCredential = $domainadmin
             }
         }
 
         if ($Node.Role -Contains 'RdsServer' ) {
             #Install feature for Rds Server
             foreach ($Feature in $ConfigurationData.Roles.Where{ $_.RoleName -Contains 'RdsServer' }.WindowsFeature) {
-                WindowsFeature "RDS_$Feature" {
-                    Name   = $Feature
-                    Ensure = $Node.Ensure
+                WindowsFeature $Feature.Name {
+                    Name   = $Feature.Name
+                    Ensure = $Feature.Ensure
+                }
+            }
+
+            foreach ($MSI in $ConfigurationData.Roles.Where{ $_.RoleName -Contains 'RdsServer' }.MsiPackages) {
+                Package $MSI.Name {
+                    Name = $MSI.name
+                    Path = $MSI.path
+                    ProductId = $MSI.ProductId
+                    Arguments = $MSI.Arguments
+                    Ensure = $MSI.Ensure
+                }
+            }
+
+            foreach ($File in $ConfigurationData.Roles.Where{ $_.RoleName -Contains 'RdsServer' }.Files) {
+                File $File.Name {
+                    SourcePath = $File.SourcePath
+                    DestinationPath = $File.DestinationPath
+                    Type = $File.Type
+                    MatchSource = $File.MatchSource
+                    Checksum = $File.Checksum
+                    Ensure = $File.Ensure
                 }
             }
 
             #region <ChocoPackage>
             #Install Chocolatey on Server RDS
-            ChocolateySoftware ChocoInst {
-                Ensure                = $Node.Ensure
-                InstallationDirectory = $ConfigurationData.ChocoParams.ChocoInstallDir
-                ChocoTempDir          = $ConfigurationData.ChocoParams.ChocoTempDir
+            cChocoInstaller "InstallChoco" {
+                InstallDir = $ConfigurationData.ChocoParams.ChocoInstallDir
             }
 
-            #Configure Chocolatey on Server RDS
-            ChocolateySource ChocolateyOrg {
-                DependsOn = '[ChocolateySoftware]ChocoInst'
-                Ensure    = $Node.Ensure
-                Name      = 'Chocolatey'
-                Source    = $ConfigurationData.ChocoParams.ChocoSource
-                Priority  = 0
-                Disabled  = $false
+            foreach ($Key in $ConfigurationData.Roles.where{ $_.RoleName -eq 'RdsServer' }.RegistryKeys) {
+                Registry $Key.Name {
+                    Ensure = $Key.Ensure
+                    Key = $Key.Name
+                    ValueName = $Key.ValueName
+                    ValueData = $Key.ValueData
+                    ValueType = $Key.ValueType
+                }
+
             }
 
             #Install chocolatey package for Server RDS
             foreach ($Package in $ConfigurationData.Roles.where{ $_.RoleName -eq 'RdsServer' }.ChocoPackages) {
-                ChocolateyPackage $Package.Name {
-                    Name      = $Package.Name
-                    Ensure    = $Node.Ensure
-                    Version = $Package.Version
-                    ChocolateyOptions = $Package.ChocoOptions
-                    DependsOn = '[ChocolateySoftware]ChocoInst'
+                if ($Package.Params) {
+                    cChocoPackageInstaller $Package.Name {
+                        Name        = $Package.Name
+                        Ensure      = $Package.Ensure
+                        Version     = $Package.Version
+                        chocoParams = $Package.Params
+                        DependsOn   = '[cChocoInstaller]InstallChoco'
+                    }
+                } else {
+                    cChocoPackageInstaller $Package.Name {
+                        Name        = $Package.Name
+                        Ensure      = $Package.Ensure
+                        Version     = $Package.Version
+                        DependsOn   = '[cChocoInstaller]InstallChoco'
+                    }
                 }
             }
             #endregion <ChocoPackage>
@@ -222,11 +197,11 @@
 }
 
 ConfigurationServer -ConfigurationData ".\ConfigurationData.psd1" -OutputPath ".\MOFFiles"
-<# Get-ChildItem -Path C:\Test\MOF | foreach {
+Get-ChildItem -Path C:\Test\Configuration\MOFFiles | ForEach-Object {
 $MofName = $_.Name
 $DestinationMof = "C:\Program Files\WindowsPowershell\DSCService\Configuration\$MofName"
 Copy-Item $_.FullName $DestinationMof
 New-DscChecksum $DestinationMof -force
-} #>
+}
 #Start-DscConfiguration -Wait -Verbose -Path "C:\Test\Dsc" -Force
 #Test-DscConfiguration -Path "C:\Test\Dsc"

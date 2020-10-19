@@ -1,126 +1,180 @@
 /*
 @TargetNode='SERVER2'
 @GeneratedBy=Laurent.Lienhard
-@GenerationDate=10/06/2020 08:34:39
+@GenerationDate=10/07/2020 19:30:57
 @GenerationHost=PORT9999
 */
 
 instance of MSFT_RoleResource as $MSFT_RoleResource1ref
 {
-ModuleName = "PsDesiredStateConfiguration";
- Name = "SNMP-Service";
- ResourceID = "[WindowsFeature]SNMP-Service";
+SourceInfo = "::10::13::WindowsFeature";
  Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::17::13::WindowsFeature";
+ ResourceID = "[WindowsFeature]SNMP-Service";
+ Name = "SNMP-Service";
+ ModuleName = "PsDesiredStateConfiguration";
 
-ModuleVersion = "0.0";
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
 instance of MSFT_RoleResource as $MSFT_RoleResource2ref
 {
-ModuleName = "PsDesiredStateConfiguration";
- Name = "SNMP-WMI-Provider";
- ResourceID = "[WindowsFeature]SNMP-WMI-Provider";
+SourceInfo = "::10::13::WindowsFeature";
  Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::17::13::WindowsFeature";
+ ResourceID = "[WindowsFeature]SNMP-WMI-Provider";
+ Name = "SNMP-WMI-Provider";
+ ModuleName = "PsDesiredStateConfiguration";
 
-ModuleVersion = "0.0";
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
 instance of MSFT_ServiceResource as $MSFT_ServiceResource1ref
 {
-ModuleName = "PsDesiredStateConfiguration";
- Name = "SNMP";
- State = "Running";
- ResourceID = "[Service]SNMP";
- Ensure = "Present";
+SourceInfo = "::18::13::Service";
  StartupType = "Automatic";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::25::13::Service";
+ ResourceID = "[Service]SNMP";
+ Name = "SNMP";
+ ModuleName = "PsDesiredStateConfiguration";
+ Ensure = "Present";
+ State = "Running";
 
-ModuleVersion = "0.0";
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
 instance of MSFT_RoleResource as $MSFT_RoleResource3ref
 {
-ModuleName = "PsDesiredStateConfiguration";
+SourceInfo = "::131::17::WindowsFeature";
+ Ensure = "Present";
+ ResourceID = "[WindowsFeature]RDS-RD-Server";
  Name = "RDS-RD-Server";
- ResourceID = "[WindowsFeature]RDS_RDS-RD-Server";
- Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::185::17::WindowsFeature";
+ ModuleName = "PsDesiredStateConfiguration";
 
-ModuleVersion = "0.0";
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
-instance of ChocolateySoftware as $ChocolateySoftware1ref
+instance of MSFT_PackageResource as $MSFT_PackageResource1ref
 {
-ChocoTempDir = "C:\\temp\\Chocolatey";
- ModuleName = "chocolatey";
- ModuleVersion = "0.0.79";
- ResourceID = "[ChocolateySoftware]ChocoInst";
- InstallationDirectory = "C:\\ProgramData\\Chocolatey";
+SourceInfo = "::138::17::Package";
  Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::193::13::ChocolateySoftware";
- ConfigurationName = "ConfigurationServer";
-};
-instance of ChocolateySource as $ChocolateySource1ref
-{
-ModuleName = "chocolatey";
- Name = "Chocolatey";
- ModuleVersion = "0.0.79";
- Priority = 0;
- ResourceID = "[ChocolateySource]ChocolateyOrg";
- Source = "https://chocolatey.org/api/v2";
- Disabled = False;
- Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::200::13::ChocolateySource";
+ Path = "\\\\srv01\\Sources\\Prem\\soapsdk.msi";
+ ResourceID = "[Package]Microsoft SOAP Toolkit 3.0";
+ Name = "Microsoft SOAP Toolkit 3.0";
+ ModuleName = "PsDesiredStateConfiguration";
+ Arguments = "/quiet /qn /norestart";
+ ProductId = "BCB4C18A-ACA6-4383-8688-E19933A705DD";
 
-DependsOn = {
-    "[ChocolateySoftware]ChocoInst"};
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
-instance of ChocolateyPackage as $ChocolateyPackage1ref
+instance of MSFT_FileDirectoryConfiguration as $MSFT_FileDirectoryConfiguration1ref
 {
-ModuleName = "chocolatey";
+SourceInfo = "::148::17::File";
+ Ensure = "Present";
+ ResourceID = "[File]exception.sites";
+ DestinationPath = "C:\\Windows\\Sun\\Java\\Deployment\\security\\exception.sites";
+ ModuleName = "PSDesiredStateConfiguration";
+ Checksum = "ModifiedDate";
+ MatchSource = True;
+ Type = "File";
+ SourcePath = "\\\\srv01\\sources\\Sun\\Java\\Deployment\\security\\exception.sites";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of cChocoInstaller as $cChocoInstaller1ref
+{
+InstallDir = "C:\\ProgramData\\Chocolatey";
+ SourceInfo = "::160::13::cChocoInstaller";
+ ModuleName = "cChoco";
+ ModuleVersion = "2.4.1.0";
+ ResourceID = "[cChocoInstaller]InstallChoco";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of MSFT_RegistryResource as $MSFT_RegistryResource1ref
+{
+SourceInfo = "::165::17::Registry";
+ Ensure = "Present";
+ ResourceID = "[Registry]HKEY_LOCAL_MACHINE\\SOFTWARE\\ExampleKey1";
+ ValueData = {
+    "TestData"
+};
+ ValueName = "TestValue";
+ ModuleName = "PsDesiredStateConfiguration";
+ Key = "HKEY_LOCAL_MACHINE\\SOFTWARE\\ExampleKey1";
+ ValueType = "ExpandString";
+
+ModuleVersion = "1.0";
+ ConfigurationName = "ConfigurationServer";
+};
+instance of cChocoPackageInstall as $cChocoPackageInstall1ref
+{
+SourceInfo = "::186::21::cChocoPackageInstaller";
+ Ensure = "Absent";
+ ResourceID = "[cChocoPackageInstaller]javaruntime";
+ ModuleVersion = "2.4.1.0";
  Name = "javaruntime";
- ModuleVersion = "0.0.79";
- ResourceID = "[ChocolateyPackage]javaruntime";
- ChocolateyOptions = NULL;
  Version = "8.0.60";
- Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::211::17::ChocolateyPackage";
+ ModuleName = "cChoco";
 
 DependsOn = {
-    "[ChocolateySoftware]ChocoInst"};
+    "[cChocoInstaller]InstallChoco"};
  ConfigurationName = "ConfigurationServer";
 };
-instance of ChocolateyPackage as $ChocolateyPackage2ref
+instance of cChocoPackageInstall as $cChocoPackageInstall2ref
 {
-ModuleName = "chocolatey";
+SourceInfo = "::186::21::cChocoPackageInstaller";
+ Ensure = "Present";
+ ResourceID = "[cChocoPackageInstaller]7zip.install";
+ ModuleVersion = "2.4.1.0";
  Name = "7zip.install";
- ModuleVersion = "0.0.79";
- ResourceID = "[ChocolateyPackage]7zip.install";
- ChocolateyOptions = NULL;
  Version = "19.0";
- Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::211::17::ChocolateyPackage";
+ ModuleName = "cChoco";
 
 DependsOn = {
-    "[ChocolateySoftware]ChocoInst"};
+    "[cChocoInstaller]InstallChoco"};
  ConfigurationName = "ConfigurationServer";
 };
-instance of ChocolateyPackage as $ChocolateyPackage3ref
+instance of cChocoPackageInstall as $cChocoPackageInstall3ref
 {
-ModuleName = "chocolatey";
- Name = "git";
- ModuleVersion = "0.0.79";
- ResourceID = "[ChocolateyPackage]git";
- ChocolateyOptions = NULL;
- Version = "2.28.0";
+SourceInfo = "::178::21::cChocoPackageInstaller";
  Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::211::17::ChocolateyPackage";
+ ResourceID = "[cChocoPackageInstaller]git";
+ ModuleVersion = "2.4.1.0";
+ Name = "git";
+ Version = "2.28.0";
+ ModuleName = "cChoco";
+ chocoParams = "--params \"/GitAndUnixToolsOnPath /NoGitLfs /SChannel /NoAutoCrlf\"";
 
 DependsOn = {
-    "[ChocolateySoftware]ChocoInst"};
+    "[cChocoInstaller]InstallChoco"};
+ ConfigurationName = "ConfigurationServer";
+};
+instance of cChocoPackageInstall as $cChocoPackageInstall4ref
+{
+SourceInfo = "::186::21::cChocoPackageInstaller";
+ Ensure = "Present";
+ ResourceID = "[cChocoPackageInstaller]microsoft-edge";
+ ModuleVersion = "2.4.1.0";
+ Name = "microsoft-edge";
+ Version = "85.0.564.68";
+ ModuleName = "cChoco";
+
+DependsOn = {
+    "[cChocoInstaller]InstallChoco"};
+ ConfigurationName = "ConfigurationServer";
+};
+instance of cChocoPackageInstall as $cChocoPackageInstall5ref
+{
+SourceInfo = "::178::21::cChocoPackageInstaller";
+ Ensure = "Present";
+ ResourceID = "[cChocoPackageInstaller]powershell-core";
+ ModuleVersion = "2.4.1.0";
+ Name = "powershell-core";
+ Version = "7.0.3";
+ ModuleName = "cChoco";
+ chocoParams = "--install-arguments=\"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 REGISTER_MANIFEST=1 ENABLE_PSREMOTING=1\"";
+
+DependsOn = {
+    "[cChocoInstaller]InstallChoco"};
  ConfigurationName = "ConfigurationServer";
 };
 instance of OMI_ConfigurationDocument
@@ -134,7 +188,7 @@ instance of OMI_ConfigurationDocument
 
                         Author="Laurent.Lienhard";
 
-                        GenerationDate="10/06/2020 08:34:39";
+                        GenerationDate="10/07/2020 19:30:57";
 
                         GenerationHost="PORT9999";
 

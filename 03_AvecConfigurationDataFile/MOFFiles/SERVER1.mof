@@ -1,170 +1,65 @@
 /*
 @TargetNode='SERVER1'
 @GeneratedBy=Laurent.Lienhard
-@GenerationDate=10/06/2020 08:34:39
+@GenerationDate=10/07/2020 19:30:57
 @GenerationHost=PORT9999
 */
 
 instance of MSFT_RoleResource as $MSFT_RoleResource1ref
 {
-ModuleName = "PsDesiredStateConfiguration";
- Name = "SNMP-Service";
- ResourceID = "[WindowsFeature]SNMP-Service";
+SourceInfo = "::10::13::WindowsFeature";
  Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::17::13::WindowsFeature";
+ ResourceID = "[WindowsFeature]SNMP-Service";
+ Name = "SNMP-Service";
+ ModuleName = "PsDesiredStateConfiguration";
 
-ModuleVersion = "0.0";
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
 instance of MSFT_RoleResource as $MSFT_RoleResource2ref
 {
-ModuleName = "PsDesiredStateConfiguration";
- Name = "SNMP-WMI-Provider";
- ResourceID = "[WindowsFeature]SNMP-WMI-Provider";
+SourceInfo = "::10::13::WindowsFeature";
  Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::17::13::WindowsFeature";
+ ResourceID = "[WindowsFeature]SNMP-WMI-Provider";
+ Name = "SNMP-WMI-Provider";
+ ModuleName = "PsDesiredStateConfiguration";
 
-ModuleVersion = "0.0";
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
 instance of MSFT_ServiceResource as $MSFT_ServiceResource1ref
 {
-ModuleName = "PsDesiredStateConfiguration";
- Name = "SNMP";
- State = "Running";
- ResourceID = "[Service]SNMP";
- Ensure = "Present";
+SourceInfo = "::18::13::Service";
  StartupType = "Automatic";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::25::13::Service";
+ ResourceID = "[Service]SNMP";
+ Name = "SNMP";
+ ModuleName = "PsDesiredStateConfiguration";
+ Ensure = "Present";
+ State = "Running";
 
-ModuleVersion = "0.0";
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
 instance of MSFT_RoleResource as $MSFT_RoleResource3ref
 {
-ModuleName = "PsDesiredStateConfiguration";
- Name = "RDS-Connection-Broker";
- ResourceID = "[WindowsFeature]CB_RDS-Connection-Broker";
+SourceInfo = "::121::17::WindowsFeature";
  Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::130::17::WindowsFeature";
+ ResourceID = "[WindowsFeature]RDS-Connection-Broker";
+ Name = "RDS-Connection-Broker";
+ ModuleName = "PsDesiredStateConfiguration";
 
-ModuleVersion = "0.0";
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
 instance of MSFT_RoleResource as $MSFT_RoleResource4ref
 {
-ModuleName = "PsDesiredStateConfiguration";
- Name = "RDS-Licensing";
- ResourceID = "[WindowsFeature]CB_RDS-Licensing";
+SourceInfo = "::121::17::WindowsFeature";
  Ensure = "Present";
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::130::17::WindowsFeature";
+ ResourceID = "[WindowsFeature]RDS-Licensing";
+ Name = "RDS-Licensing";
+ ModuleName = "PsDesiredStateConfiguration";
 
-ModuleVersion = "0.0";
- ConfigurationName = "ConfigurationServer";
-};
-instance of MSFT_WaitForAll as $MSFT_WaitForAll1ref
-{
-ModuleName = "PsDesiredStateConfiguration";
- RetryCount = 50;
- ResourceID = "[WaitForAll]SessionHost";
- NodeName = {
-    "server2.hiat.local"
-};
- ResourceName = "[WindowsFeature]RDS_RDS-RD-Server";
- RetryIntervalSec = 15;
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::136::13::WaitForAll";
-
-ModuleVersion = "0.0";
-DependsOn = {
-    "[WindowsFeature]CB_RDS-Licensing"};
- ConfigurationName = "ConfigurationServer";
-};
-instance of MSFT_Credential as $MSFT_Credential1ref
-{
-UserName = "hiat\\install";
- Password = "Somepass1";
-
-};
-
-instance of MSFT_xRDSessionDeployment as $MSFT_xRDSessionDeployment1ref
-{
-ModuleName = "xRemoteDesktopSessionHost";
- ModuleVersion = "1.8.0.0";
- SessionHost = NULL;
- ResourceID = "[xRDSessionDeployment]NewDeploy";
- WebAccessServer = NULL;
- ConnectionBroker = NULL;
- PsDscRunAsCredential = $MSFT_Credential1ref;
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::145::13::xRDSessionDeployment";
- ConfigurationName = "ConfigurationServer";
-};
-instance of MSFT_Credential as $MSFT_Credential2ref
-{
-UserName = "hiat\\install";
- Password = "Somepass1";
-
-};
-
-instance of MSFT_xRDSessionCollection as $MSFT_xRDSessionCollection1ref
-{
-ModuleName = "xRemoteDesktopSessionHost";
- ModuleVersion = "1.8.0.0";
- SessionHost = NULL;
- ResourceID = "[xRDSessionCollection]MyCollection";
- CollectionName = NULL;
- ConnectionBroker = NULL;
- PsDscRunAsCredential = $MSFT_Credential2ref;
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::152::13::xRDSessionCollection";
-
-DependsOn = {
-    "[xRDSessionDeployment]NewDeploy"};
- ConfigurationName = "ConfigurationServer";
-};
-instance of MSFT_Credential as $MSFT_Credential3ref
-{
-UserName = "hiat\\install";
- Password = "Somepass1";
-
-};
-
-instance of MSFT_xRDSessionCollectionConfiguration as $MSFT_xRDSessionCollectionConfiguration1ref
-{
-BrokenConnectionAction = NULL;
- ModuleName = "xRemoteDesktopSessionHost";
- DisconnectedSessionLimitMin = 0;
- ModuleVersion = "1.8.0.0";
- ConnectionBroker = NULL;
- ResourceID = "[xRDSessionCollectionConfiguration]CollectionConfig";
- IdleSessionLimitMin = 0;
- CollectionName = NULL;
- AutomaticReconnectionEnabled = True;
- PsDscRunAsCredential = $MSFT_Credential3ref;
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::160::13::xRDSessionCollectionConfiguration";
- UserGroup = NULL;
-
-DependsOn = {
-    "[xRDSessionCollection]MyCollection"};
- ConfigurationName = "ConfigurationServer";
-};
-instance of MSFT_Credential as $MSFT_Credential4ref
-{
-UserName = "hiat\\install";
- Password = "Somepass1";
-
-};
-
-instance of MSFT_xRDLicenseConfiguration as $MSFT_xRDLicenseConfiguration1ref
-{
-ModuleName = "xRemoteDesktopSessionHost";
- ModuleVersion = "1.8.0.0";
- ConnectionBroker = NULL;
- ResourceID = "[xRDLicenseConfiguration]licenseconfig";
- LicenseMode = "PerUser";
- PsDscRunAsCredential = $MSFT_Credential4ref;
- SourceInfo = "C:\\Users\\Laurent.Lienhard\\OneDrive\\01-DEV\\TestDsc\\03_AvecConfigurationDataFile\\ConfigurationServer.ps1::172::13::xRDLicenseConfiguration";
-
-DependsOn = {
-    "[xRDSessionCollectionConfiguration]CollectionConfig"};
+ModuleVersion = "1.0";
  ConfigurationName = "ConfigurationServer";
 };
 instance of OMI_ConfigurationDocument
@@ -172,13 +67,13 @@ instance of OMI_ConfigurationDocument
                     {
  Version="2.0.0";
 
-                        MinimumCompatibleVersion = "2.0.0";
+                        MinimumCompatibleVersion = "1.0.0";
 
                         CompatibleVersionAdditionalProperties= {"Omi_BaseResource:ConfigurationName"};
 
                         Author="Laurent.Lienhard";
 
-                        GenerationDate="10/06/2020 08:34:39";
+                        GenerationDate="10/07/2020 19:30:57";
 
                         GenerationHost="PORT9999";
 

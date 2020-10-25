@@ -12,12 +12,12 @@
         },
         @{
             NodeName = "SRV01"
-            Role     = @("PullServer", "DomainController", "RootCA", "Routeur")
+            Role     = @("PullServer", "DomainController", "RootCA", "Routeur","DNS","DHCP")
         },
         @{
             NodeName = "SERVER1"
             Role     = @("Connection Broker")
-        }
+        },
         @{
             NodeName = "SERVER2"
             Role     = @("RdsServer")
@@ -25,8 +25,41 @@
     )
     Roles       = @(
         @{
+            RoleName = "DNS"
+            WindowsFeature = @(
+                @{
+                    Name = "DNS"
+                    Ensure = "Present"
+                }
+            )
+            Services = @(
+                @{
+                    Name               = "DNS"
+                    Ensure             = "Present"
+                    ServiceState       = "Running"
+                    ServiceStartupType = "Automatic"
+                }
+            )
+        },
+        @{
+            RoleName = "DHCP"
+            WindowsFeature = @(
+                @{
+                    Name   = "DHCP"
+                    Ensure = "Present"
+                }
+            )
+            Services       = @(
+                @{
+                    Name               = "DHCP"
+                    Ensure             = "Present"
+                    ServiceState       = "Running"
+                    ServiceStartupType = "Automatic"
+                }
+            )
+        }
+        @{
             RoleName = "PullServer"
-            Modules  = @("PSDesiredStateConfiguration", "chocolatey", "ComputerManagementDsc", "cChoco")
         },
         @{
             RoleName       = "DomainController"
@@ -40,21 +73,14 @@
                     Ensure = "Present"
                 }
             )
-
             Services       = @(
-                @{
-                    Name = "DNS"
-                    Ensure = "Present"
-                    ServiceState       = "Running"
-                    ServiceStartupType = "Automatic"
-                }
                 @{
                     Name = "NTDS"
                     Ensure = "Present"
                     ServiceState       = "Running"
                     ServiceStartupType = "Automatic"
                 }
-                )
+            )
         },
         @{
             RoleName = "Connection Broker"
@@ -67,6 +93,14 @@
                     Name = "RDS-Licensing"
                     Ensure = "Present"
                 }
+                @{
+                    Name = "RSAT-DHCP"
+                    Ensure = "Present"
+                }
+                @{
+                    Name   = "RSAT-DNS-Server"
+                    Ensure = "Present"
+                }
             )
         }
         @{
@@ -77,7 +111,7 @@
                     Ensure = "Present"
                 }
                 )
-
+            #Lsite des package choco
             ChocoPackages  = @(
                 @{
                     Name = "javaruntime"
@@ -109,7 +143,7 @@
                     Ensure = "Present"
                  }
             )
-
+            #Liste des clés de registre
             RegistryKeys = @(
                 @{
                     Name = "HKEY_LOCAL_MACHINE\SOFTWARE\ExampleKey1"
@@ -119,7 +153,7 @@
                     Ensure = "Present"
                 }
             )
-
+            #Liste des packages MSI
             MsiPackages =@(
                 @{
                     #Necessaire pour PREM
@@ -130,7 +164,7 @@
                     Ensure = "Present"
                 }
             )
-
+            #Liste des fichiers
             Files =@(
                 @{
                     Name = "exception.sites"
@@ -157,5 +191,71 @@
         LCMRebootNodeIfNeeded = $true
         LCMAllowModuleOverwrite = $true
         LCMServerUrl = "https://SRV01:8080/PSDSCPullServer.svc"
+    }
+    DHCPParams = @{
+        Scopes = @(
+            @{
+                Ensure        = 'Present'
+                ScopeId       = '192.168.81.0'
+                IPStartRange  = '192.168.81.50'
+                IPEndRange    = '192.168.81.100'
+                Name          = 'SIEGE'
+                SubnetMask    = '255.255.255.0'
+                State         = 'Active'
+                AddressFamily = 'IPv4'
+            }
+            @{
+                Name          = "Agence"
+                Ensure        = "Present"
+                ScopeID       = "192.168.82.0"
+                IPStartRange  = "192.168.82.50"
+                IPEndRange    = "192.168.82.100"
+                SubnetMask    = "255.255.255.0"
+                State         = 'Active'
+                AddressFamily = 'IPv4'
+            }
+        )
+        ServerOptions = @(
+            @{
+                OptionID = 6
+                Value = "192.168.81.1"
+                Ensure = "Present"
+                AddressFamily = 'IPv4'
+                VendorClass   = ''
+                UserClass     = ''
+            }
+            @{
+                OptionID      = 15
+                Value         = "HIAT.local"
+                Ensure        = "Present"
+                AddressFamily = 'IPv4'
+                VendorClass   = ''
+                UserClass     = ''
+            }
+        )
+        ServerAuthorization = @{
+            Ensure = "Present"
+            DnsName = "SRV01.HIAT.local"
+            IpAddress = "192.168.81.1"
+        }
+        Reservations = @(
+            @{
+                Name = "SRV01.HIAT.local"
+                Ensure = "Present"
+                ScopeID = "192.168.81.0"
+                ClientMACAddress = "0017FB000000"
+                IPAddress = "192.168.81.1"
+                AddressFamily = "IPv4"
+            }
+            @{
+                Name             = "SERVER1.HIAT.local"
+                Ensure           = "Present"
+                ScopeID          = "192.168.81.0"
+                ClientMACAddress = "0017FB000002"
+                IPAddress        = "192.168.81.2"
+                AddressFamily    = "IPv4"
+            }
+        )
+
     }
 }

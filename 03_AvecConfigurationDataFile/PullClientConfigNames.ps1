@@ -28,4 +28,4 @@ configuration PullClientConfigNames {
 
 PullClientConfigNames -ConfigurationData ".\ConfigurationData.psd1" -OutputPath "./LCMFiles"
 
-Set-DSCLocalConfigurationManager -Path ../LCMFiles -Verbose
+#Set-DSCLocalConfigurationManager -Path ./LCMFiles -Verbose
